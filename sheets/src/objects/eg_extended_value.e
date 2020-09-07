@@ -93,4 +93,83 @@ feature -- Element Change
 							( is_number_value = False and then is_bool_value = False and then is_formula_value = False and then is_error_value = False)
 		end
 
+	set_bool_value (a_value: like bool_value)
+			-- Set `bool_value` with `a_vaue`?
+		do
+			is_number_value := False
+			is_string_value := False
+			is_bool_value   := True
+			is_formula_value:= False
+			is_error_value  := False
+
+			bool_value := a_value
+		ensure
+			bool_value_set: bool_value = a_value
+			union_field_bool: is_bool_value implies
+							( is_number_value = False and then is_string_value = False and then is_formula_value = False and then is_error_value = False)
+		end
+
+	set_formula_value (a_value: like formula_value)
+			-- Set `formula_value` with `a_vaue`?
+		do
+			is_number_value := False
+			is_string_value := False
+			is_bool_value   := False
+			is_formula_value:= True
+			is_error_value  := False
+
+			formula_value := a_value
+		ensure
+			formula_value_set: formula_value = a_value
+			union_field_formula: is_formula_value implies
+							( is_number_value = False and then is_string_value = False and then is_bool_value = False and then is_error_value = False)
+		end
+
+	set_error_value (a_value: like error_Value)
+			-- Set `error_value` with `a_vaue`?
+		do
+			is_number_value := False
+			is_string_value := False
+			is_bool_value   := False
+			is_formula_value:= False
+			is_error_value  := True
+
+			error_value := a_value
+		ensure
+			error_value_set: error_value = a_value
+			union_field_error: is_error_value implies
+							( is_number_value = False and then is_string_value = False and then is_bool_value = False and then is_formula_value = False)
+		end
+
+	reset
+			-- Set fields to defaults.
+		do
+			number_value  := 0
+			string_value  := Void
+			bool_value    := False
+			formula_value := Void
+			error_value	  := Void
+		end
+
+feature -- Eiffel to JSON
+
+	to_json: JSON_OBJECT
+			-- Json representation of the current object.
+		do
+			create Result.make_empty
+			if is_number_value then
+				Result.put (create {JSON_NUMBER}.make_real (number_value), "numberValue")
+			elseif is_string_value and then attached string_value as l_sv then
+				Result.put (create {JSON_STRING}.make_from_string (l_sv), "stringValue")
+			elseif is_bool_value then
+				Result.put (create {JSON_BOOLEAN}.make (bool_value), "boolValue")
+			elseif is_formula_value and then attached formula_value as l_fv then
+				Result.put (create {JSON_STRING}.make_from_string (l_fv), "formulaValue")
+			elseif attached error_value as l_ev then
+				Result.put (l_ev.to_json, "errorValue")
+			end
+		end
+
+
+-- todo add invariant.
 end
