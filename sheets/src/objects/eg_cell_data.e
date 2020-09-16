@@ -139,25 +139,41 @@ feature -- Element Change
 			note_set: note_ = a_val
 		end
 
+	force_text_format_runs (a_text_format_run: EG_TEXT_FORMAT_RUN)
+			-- Add item `a_text_format_run` to the list `text_format_runs`
+		local
+			l_text_format_runs: like text_format_runs
+		do
+			l_text_format_runs := text_format_runs
+			if l_text_format_runs /= Void then
+				l_text_format_runs.force (a_text_format_run)
+			else
+				create {ARRAYED_LIST [EG_TEXT_FORMAT_RUN]} l_text_format_runs.make (5)
+				l_text_format_runs.force (a_text_format_run)
+			end
+			text_format_runs := l_text_format_runs
+		end
+
+	set_data_validation (a_data_validation: like data_validation)
+		do
+			data_validation := a_data_validation
+		ensure
+			data_validation_set: a_data_validation = data_validation
+		end
+
+	set_pivot_table (a_pivot_table: like pivot_table)
+		do
+			pivot_table := a_pivot_table
+		ensure
+			pivot_table_set: pivot_table = a_pivot_table
+		end
+
 feature -- Eiffel to JSON
 
 	to_json: JSON_OBJECT
 			-- JSON representation of the current object.
---		  "textFormatRuns": [
---		    {
---		      object (TextFormatRun)
---		    }
---		  ],
---		  "dataValidation": {
---		    object (DataValidationRule)
---		  },
---		  "pivotTable": {
---		    object (PivotTable)
---		  }
---		}
 		local
 			l_array: JSON_ARRAY
-
 		do
 			create Result.make_empty
 			if attached user_entered_value as l_uev then
@@ -190,6 +206,9 @@ feature -- Eiffel to JSON
 			end
 			if attached data_validation as l_validation then
 				Result.put (l_validation.to_json, "dataValidation")
+			end
+			if attached pivot_table as l_pivot_table then
+				Result.put (l_pivot_table.to_json, "pivotTable")
 			end
 		end
 

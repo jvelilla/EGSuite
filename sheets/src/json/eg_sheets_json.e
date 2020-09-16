@@ -478,19 +478,19 @@ feature {NONE} -- JSON To Eiffel
 		do
 			create Result
 			if attached {JSON_OBJECT}  json_value (a_json, "userEnteredValue") as l_user_data   then
-
+				Result.set_user_entered_value (eg_extended_value (l_user_data))
 			end
 			if attached {JSON_OBJECT} json_value (a_json, "effectiveValue") as l_effective_value then
-
+				Result.set_effective_value (eg_extended_value (l_effective_value))
 			end
 			if attached string_value_from_json (a_json, "formattedValue") as l_fv then
 				Result.set_formatted_value (l_fv)
 			end
 			if attached {JSON_OBJECT} json_value (a_json, "userEnteredFormat") as l_user_format then
-
+				Result.set_user_entered_format (cell_format (l_user_format))
 			end
 			if attached {JSON_OBJECT} json_value (a_json, "effectiveFormat") as l_ef then
-
+				Result.set_effective_format (cell_format (l_ef))
 			end
 			if attached string_value_from_json (a_json, "hyperlink") as l_hyperlink then
 				Result.set_hyperlink (l_hyperlink)
@@ -498,8 +498,10 @@ feature {NONE} -- JSON To Eiffel
 			if attached string_value_from_json (a_json, "note") as l_note then
 				Result.set_note (l_note)
 			end
-			if attached {JSON_OBJECT} json_value (a_json, "textFormatRuns") as l_tfr then
-
+			if attached {JSON_ARRAY} json_value (a_json, "textFormatRuns") as l_tfr then
+				across l_tfr as ic loop
+					Result.force_text_format_runs (eg_text_format_run (ic.item))
+				end
 			end
 			if attached {JSON_OBJECT} json_value (a_json, "dataValidation") as l_dv then
 
@@ -507,7 +509,18 @@ feature {NONE} -- JSON To Eiffel
 			if attached {JSON_OBJECT} json_value (a_json, "pivotTable") as l_pt then
 
 			end
+		end
 
+	eg_text_format_run (a_json: JSON_VALUE): EG_TEXT_FORMAT_RUN
+			-- Create an object `EG_TEXT_FORMAT_RUN` from a json representation.
+		do
+			create Result
+			if attached integer_value_from_json (a_json, "startIndex") as l_index then
+				Result.set_start_index (l_index)
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "format") as l_format  then
+				Result.set_format (text_format (l_format))
+			end
 		end
 
 	eg_extended_value (a_json: JSON_VALUE): EG_EXTENDED_VALUE

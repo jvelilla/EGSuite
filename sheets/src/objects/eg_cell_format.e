@@ -178,35 +178,7 @@ feature -- Change Element
 feature -- Eiffel to JSON
 
 	to_json: JSON_OBJECT
---	{
---		  "numberFormat": {
---		    object (NumberFormat)
---		  },
---		  "backgroundColor": {
---		    object (Color)
---		  },
---		  "backgroundColorStyle": {
---		    object (ColorStyle)
---		  },
---		  "borders": {
---		    object (Borders)
---		  },
---		  "padding": {
---		    object (Padding)
---		  },
---		  "horizontalAlignment": enum (HorizontalAlign),
---		  "verticalAlignment": enum (VerticalAlign),
---		  "wrapStrategy": enum (WrapStrategy),
---		  "textDirection": enum (TextDirection),
---		  "textFormat": {
---		    object (TextFormat)
---		  },
---		  "hyperlinkDisplayType": enum (HyperlinkDisplayType),
---		  "textRotation": {
---		    object (TextRotation)
---		  }
---		}
-
+			-- Json represenetation of the current object.
 		do
 			create Result.make_empty
 			if attached number_format as l_number_format then
