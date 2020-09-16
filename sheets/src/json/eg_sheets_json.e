@@ -477,7 +477,88 @@ feature {NONE} -- JSON To Eiffel
 			-- Create an object `EG_CELL_DATA` from a json representation.
 		do
 			create Result
-			
+			if attached {JSON_OBJECT}  json_value (a_json, "userEnteredValue") as l_user_data   then
+
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "effectiveValue") as l_effective_value then
+
+			end
+			if attached string_value_from_json (a_json, "formattedValue") as l_fv then
+				Result.set_formatted_value (l_fv)
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "userEnteredFormat") as l_user_format then
+
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "effectiveFormat") as l_ef then
+
+			end
+			if attached string_value_from_json (a_json, "hyperlink") as l_hyperlink then
+				Result.set_hyperlink (l_hyperlink)
+			end
+			if attached string_value_from_json (a_json, "note") as l_note then
+				Result.set_note (l_note)
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "textFormatRuns") as l_tfr then
+
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "dataValidation") as l_dv then
+
+			end
+			if attached {JSON_OBJECT} json_value (a_json, "pivotTable") as l_pt then
+
+			end
+
+		end
+
+	eg_extended_value (a_json: JSON_VALUE): EG_EXTENDED_VALUE
+			-- Create an object `EG_EXTENDED_VALUE` from a json representation.
+		do
+			create Result
+			if attached real_value_from_json (a_json, "numberValue") as l_nv then
+				Result.set_number_value (l_nv)
+			elseif attached string_value_from_json (a_json, "stringValue") as l_sv then
+				Result.set_string_value (l_sv)
+			elseif attached boolean_value_from_json (a_json, "boolValue") as l_bv then
+				Result.set_bool_value (l_bv)
+			elseif attached string_value_from_json (a_json, "formulaValue") as l_fv then
+				Result.set_formula_value (l_fv)
+			elseif attached {JSON_OBJECT} json_value (a_json, "errorValue") as l_error then
+				Result.set_error_value (eg_error_value (l_error))
+			end
+		end
+
+	eg_error_value (a_json: JSON_VALUE): EG_ERROR_VALUE
+			-- Create an object `EG_ERROR_VALUE` from a json represenation
+		local
+			l_error: EG_ERROR_TYPE
+		do
+			create Result
+			if attached string_value_from_json (a_json, "type") as l_type then
+				create l_error
+				if l_type.same_string ("ERROR") then
+					l_error.set_error
+				elseif l_type.same_string ("NULL_VALUE") then
+					l_error.set_null_value
+				elseif l_type.same_string ("DIVIDE_BY_ZERO") then
+					l_error.set_divide_by_zero
+				elseif l_type.same_string ("VALUE") then
+					l_error.set_evalue
+				elseif l_type.same_string ("REF") then
+					l_error.set_ref
+				elseif l_type.same_string ("NAME") then
+					l_error.set_name
+				elseif l_type.same_string ("NUM") then
+					l_error.set_num
+				elseif l_type.same_string ("N_A") then
+					l_error.set_n_a
+				elseif l_type.same_string ("LOADING") then
+					l_error.set_loading
+				end
+				Result.set_type (l_error)
+			end
+			if attached string_value_from_json (a_json, "message") as l_message then
+				Result.set_message (l_message)
+			end
 		end
 
 	eg_named_ranges (a_json: JSON_VALUE): EG_NAMED_RANGE

@@ -58,6 +58,9 @@ feature {NONE} -- Initialization
 	name: INTEGER = 7
 			-- Corresponds to the #NAME? error.
 
+	num: INTEGER = 10
+			-- Corresponds to the #NUM! error.		
+
 	n_a: INTEGER = 8
 			-- Corresponds to the #N/A error.
 
@@ -108,6 +111,13 @@ feature -- Change Elements
 			value_set_with_name: value = name
 		end
 
+	set_num
+		do
+			set_value (num)
+		ensure
+			value_set_with_num: value = num
+		end
+
 	set_n_a
 		do
 			set_value (n_a)
@@ -155,6 +165,11 @@ feature -- Status Report
 			Result := value = name
 		end
 
+	is_num: BOOLEAN
+		do
+			Result := value = num
+		end
+
 	is_n_a: BOOLEAN
 		do
 			Result := value = n_a
@@ -175,6 +190,7 @@ feature -- Status Report
 			          a_value = evalue or else
 			          a_value = ref or else
 			          a_value = name or else
+			          a_value = num or else
 			          a_value = n_a or else
 			          a_value = loading
 		end
@@ -197,6 +213,8 @@ feature -- Eiffel to JSON
 				Result := "REF"
 			elseif is_name then
 				Result := "NAME"
+			elseif is_num then
+				Result := "NUM"
 			elseif is_n_a then
 				Result := "N_A"
 			elseif is_loading then

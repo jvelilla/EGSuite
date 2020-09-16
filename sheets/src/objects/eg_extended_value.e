@@ -18,6 +18,7 @@ note
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
+	EIS: "name=Extended Value", "src=https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ExtendedValue", "protocol=uri"
 
 class
 	EG_EXTENDED_VALUE

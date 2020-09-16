@@ -81,6 +81,12 @@ feature -- Access
 			-- A data validation rule on the cell, if any.
 			-- When writing, the new data validation rule will overwrite any prior rule.
 
+	pivot_table: detachable EG_PIVOT_TABLE
+			-- A pivot table anchored at this cell.
+			-- The size of pivot table itself is computed dynamically based on its data, grouping, filters, values, etc.
+			-- Only the top-left cell of the pivot table contains the pivot table definition.
+			-- The other cells will contain the calculated values of the results of the pivot in their effectiveValue fields.
+
 feature -- Element Change
 
 	set_user_entered_value (a_val: like user_entered_value)
@@ -137,10 +143,53 @@ feature -- Eiffel to JSON
 
 	to_json: JSON_OBJECT
 			-- JSON representation of the current object.
+--		  "textFormatRuns": [
+--		    {
+--		      object (TextFormatRun)
+--		    }
+--		  ],
+--		  "dataValidation": {
+--		    object (DataValidationRule)
+--		  },
+--		  "pivotTable": {
+--		    object (PivotTable)
+--		  }
+--		}
+		local
+			l_array: JSON_ARRAY
+
 		do
 			create Result.make_empty
 			if attached user_entered_value as l_uev then
 				Result.put (l_uev.to_json, "userEnteredValue")
+			end
+			if attached effective_format as l_ef then
+				Result.put (l_ef.to_json, "effectiveValue" )
+			end
+			if attached formatted_value as l_fm then
+				Result.put (create {JSON_STRING}.make_from_string (l_fm), "formattedValue")
+			end
+			if attached user_entered_format as l_format then
+				Result.put (l_format.to_json, "userEnteredFormat")
+			end
+			if attached effective_format as l_effective_format then
+				Result.put (l_effective_format.to_json, "effectiveFormat")
+			end
+			if attached hyperlink as l_hyperlink then
+				Result.put (create {JSON_STRING}.make_from_string (l_hyperlink), "hyperlink")
+			end
+			if attached note_ as l_note then
+				Result.put (create {JSON_STRING}.make_from_string (l_note), "note")
+			end
+			if attached text_format_runs as l_runs then
+				create l_array.make (l_runs.count)
+				across l_runs as ic loop
+					l_array.add (ic.item.to_json)
+				end
+				Result.put (l_array, "textFormatRuns")
+			end
+			if attached data_validation as l_validation then
+				Result.put (l_validation.to_json, "dataValidation")
 			end
 		end
 
